@@ -1,0 +1,8 @@
+//Final Fields 3.4.1
+
+Even if an object is mutable, making some fields final can still simplify reasoning 
+bout its state, since limiting the mutability of an object restricts
+its set of possible states
+
+Just as it is a good practice to make all fields private unless they need greater visibility
+it is good practice to make all fields final unless they need to be mutable
