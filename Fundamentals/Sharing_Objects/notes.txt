@@ -6,3 +6,106 @@ its set of possible states
 
 Just as it is a good practice to make all fields private unless they need greater visibility
 it is good practice to make all fields final unless they need to be mutable
+
+
+
+
+
+
+// Immutable objects and initialization safety 3.5.2
+
+Immutable objects can be safely accessed even when synchronization is not used to publish the object reference
+
+	for this to happen the folling must be met
+
+		unmodifiable state
+		all fields are final
+		proper construction
+
+immutable objects can be sued safely by any thread without additional
+synchronization, even when syncrhonization is not used to publish them
+
+
+
+
+
+
+
+// Safe publication idioms 3.5.3
+
+to publish an object safely, the reference to the object 
+and the object's state must be made visible to other threads
+at the same time. A properly construct object can be safely by:
+
+	*Initializing an object reference from a static initializer
+
+	*storing a refence to it into a volatilefield or AtomicReference
+
+	*storing a refence to it into a final field of a poperly constructed object
+
+	*Storing a reference to it itno a field that is properly guarded by a lock
+
+
+
+
+// Effectively immutable objects 3.5.4
+
+safely published efectively immutable objects can be used safely
+by any thread without additional syncrhonizaation
+
+ex
+
+	Date is mutable, if used as if it were immutable
+	it may be able to eliminate the locking 
+
+	suppossed you want to maintain a Map storing the last login time of each user
+
+	public Map<String, Date> lastLogin = Collections.synchonizedMap(new HashMap<String, Date>() );
+
+if date values aren't modified after plaecd in the Map
+
+syncrhonization in the synchonizedMap implementaion is enough to publish the Date values safely
+
+this would ean no additional synchronizaiton is needed 
+
+
+
+
+
+
+
+// Mutable Objects 3.5.5
+
+if an object may be modified after construction
+safe publication ensure only visibility of the as-published staet
+
+
+publication requirements for an object depend on its mutability
+
+	* Immutable objects can be published through any mechanism
+
+	* Effectively immutable objects must be safely pusblished
+
+	* Mutable objects must be safely published, and must be either threadsafe or guarded by a lock
+
+
+
+
+// Sharing objects safely 3.5.6
+
+
+policies for using and sharing objects in concurrent programs
+
+Thread-confied: A thread confined object is owned exclusively by and confined to one thread, and can be modified by its ownign thread
+
+shared read only: A shared read-only object can be accessed concurrently by multiple threads without addition synchronization
+but can't be modified by any thread. Shared read-only objects include imutable and effectively immutable objecst
+
+Shared thread-safe
+
+	Object that performs synchonization internally, so multiple threads can freely access it thorugh its 
+	public interface without further synchronization
+
+Guarded
+	A guarded object can be accessed only with a spefcific lock held. Guarded objects include those that are
+	encapsulated within other thread-safe objects and published objects tahat are known to be guarded by a specific lock
